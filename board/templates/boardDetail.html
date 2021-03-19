@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>게시판</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="../static/css/boardDetail.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#reply_btn").click(function(){
+			//alert("a");
+			let reply_val = $("#reply_val").val();
+			$.ajax({
+				url: "/board/reply",
+				type:'get',
+				data:{"reply_val":reply_val, "replied_id": $("#text_id").val()},
+				datatype:"json",
+				success:function(data){
+					let str = "";
+					for(var a = 0; a< data['reply'].length; a++){
+						//alert(a)
+						str += "<div class='reply_box'>"
+						str += "<p class='reply_title'>";
+						str += data['reply'][a]['writer'];
+						str += data['reply'][a]['reply_time'] + "</p>";
+						str += "<p>" +  data['reply'][a]['reply_content'];
+						str += "</p>";
+						str += "</div>"
+					}
+					$(".reply_content").html(str)
+					$("#reply_val").val("")
+				},
+				error:function(){
+					alert("오류가 발생했습니다.")
+				}
+			})
+		})
+	})
+</script>
+</head>
+<body>
+{% include 'navbar.html' %}
+<hr>
+<input id="text_id" type="hidden" value="{{text.id}}">
+<div class="container">
+	<h2>{{text.title}}</h2><br>
+	<span>{{text.writer}}&nbsp&nbsp | {{text.write_time}}&nbsp&nbsp | 조회수:{{text.read_count}}</span> 
+	<span class="board_button">
+		<a href="update?id={{text.id}}"><button class="btn btn-outline-info">수정하기</button></a>
+		<a href="delete?id={{text.id}}"><button class="btn btn-outline-info">삭제하기</button></a>
+	</span>
+	<hr>
+	<div class="content">
+	{{text.content}}
+	</div>
+	<textarea id="reply_val" name="comment" rows="5" cols="95"></textarea>{% csrf_token %}
+	<button id="reply_btn">댓글달기</button>
+	<div class="reply_content">
+		{% if reply_list %}
+			{% for a in reply_list %}
+				<div class="reply_box">
+					<p class="reply_title">작성자: {{a.writer}} | 댓글 작성 일시: {{a.write_time}}</p>
+					<p>{{a.content}}</p>
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
+</div>
+</body>
+</html>

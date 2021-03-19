@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+.reply_box{
+	border: 1px solid black;
+}
+
+.reply_box > .reply_title{
+	color: red;
+	font-weight: bold;
+}

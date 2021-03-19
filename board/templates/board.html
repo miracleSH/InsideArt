@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>인사이트 아트 / 게시판</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="../static/css/index.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+{% include 'navbar.html' %}
+<hr>
+<div class="container">
+  <h2>Board</h2>
+  <span>인사이드 아트를 활동하며 느낀 생각들을 공유해주세요.</span> 
+  <a href="/board/insert">글쓰기</a>
+  <br><br>       
+  <table class="table">
+    <thead>
+      <tr>
+        <th>글번호</th>
+        <th>작성자</th>
+        <th>제목</th>
+        <th>올린 날짜</th>
+        <th>조회수</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in data %}
+      	<tr>
+      		<td>{{b.id}}</td>
+      		<td>{{b.writer}}</td>
+      		<td><a href="/board/detail?id={{b.id}}">{{b.title}}</a></td>
+      		<td>{{b.write_time}}</td>
+      		<td>{{b.read_count}}</td>
+      	</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class = "pagenate">
+  	<ul class="pagination">
+	    {% for page_number in data.paginator.page_range %}
+	    	{% if page_number == data.number %}
+	    		<li class="active"><a>{{page_number}}</a></li>
+	    	{%else%}
+	    		<li><a href="/board?page={{page_number}}">{{page_number}}</a></li>
+	    	{% endif %}
+	    	
+	    {% endfor %}
+  	</ul>
+  </div>
+</div>
+</body>
+</html>
